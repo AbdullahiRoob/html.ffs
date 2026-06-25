@@ -342,14 +342,18 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
+      Width: 100%;
+      clear: both;
     }
 
     .music-card {
-      border-radius: 12px;
-      padding: 2rem 1.8rem;
-      position: relative;
-      overflow: hidden;
-    }
+  border-radius: 12px;
+  padding: 2rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  word-wrap: break-word;
+}
     .music-card::before {
       content: '';
       position: absolute;
@@ -695,7 +699,7 @@
 </div>
 
 <!-- ════════ CLOSING ════════ -->
-<div class="closing">
+<div class="closing" style="clear:both; width:100%; display:block;">
   <h2>
     <span class="c1">Happy</span>
     <span class="c2">Birthday</span>
