@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Faiza 🎉</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:    #0A0A0A;
+      --hot:      #FF2D55;
+      --yellow:   #FFD700;
+      --purple:   #9B51E0;
+      --cyan:     #00D4FF;
+      --orange:   #FF6B00;
+      --white:    #FFFFFF;
+      --offwhite: #F5F5F5;
+      --grey:     #888888;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── CONFETTI CANVAS ── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ── MUSIC BAR ── */
+    .music-bar {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--hot);
+      color: var(--white);
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 24px rgba(255,45,85,0.5);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .music-bar:hover { transform: scale(1.06); background: #e0002a; }
+    .note { animation: bob 1s ease-in-out infinite; display: inline-block; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    audio { display: none; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* colourful glow blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .blob-1 { width:400px;height:400px;background:var(--hot);   top:-100px;  left:-100px; }
+    .blob-2 { width:350px;height:350px;background:var(--purple);bottom:-80px; right:-80px; }
+    .blob-3 { width:250px;height:250px;background:var(--yellow);top:40%;     left:60%;    opacity:0.2; }
+
+    .birthday-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+
+    /* PHOTO FRAME */
+    .photo-frame {
+      width: 190px; height: 190px;
+      border-radius: 50%;
+      border: 4px solid var(--hot);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      box-shadow:
+        0 0 0 6px rgba(255,45,85,0.15),
+        0 0 0 12px rgba(255,215,0,0.08),
+        0 24px 60px rgba(0,0,0,0.6);
+      opacity: 0;
+      animation: fadeUp 0.7s 0s forwards;
+      position: relative; z-index: 1;
+    }
+    .photo-frame img { width:100%;height:100%;object-fit:cover; }
+    .photo-placeholder {
+      width:100%;height:100%;
+      background: #1a1a1a;
+      display:flex;align-items:center;justify-content:center;
+      font-size:3.5rem;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 14vw, 9rem);
+      line-height: 0.95;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards;
+      position: relative; z-index: 1;
+    }
+    .hero h1 .line1 { color: var(--white); display: block; }
+    .hero h1 .line2 {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--hot);
+      display: block;
+    }
+    .hero h1 .line3 { color: var(--yellow); display: block; }
+
+    .hero-sub {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+      margin-bottom: 0;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards, glow 2s 2s infinite;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes glow {
+      0%,100%{opacity:0.2} 50%{opacity:0.5}
+    }
+
+    /* ── SECTION BASE ── */
+    .section-wrap { max-width: 900px; margin: 0 auto; padding: 5rem 1.5rem; }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.4rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .divider {
+      height: 3px;
+      width: 3rem;
+      border-radius: 2px;
+      margin-bottom: 2.8rem;
+    }
+
+    /* ── TV SHOW SECTION ── */
+    .show-section { background: #0f0f0f; }
+
+    .show-card {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .show-poster {
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      border: 1px solid rgba(255,45,85,0.3);
+      border-radius: 8px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(255,45,85,0.1);
+    }
+    .show-poster .icon { font-size: 3rem; display:block; margin-bottom:1rem; }
+    .show-poster h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      color: var(--hot);
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+    }
+    .show-poster p { font-size: 0.72rem; color: var(--grey); letter-spacing: 0.06em; }
+
+    .show-text p {
+      color: rgba(255,255,255,0.6);
+      line-height: 1.95;
+      font-size: 0.93rem;
+      margin-bottom: 1rem;
+    }
+    .show-text p:last-of-type { font-style: italic; color: rgba(255,255,255,0.35); }
+    .show-tags { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1.2rem; }
+    .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.28rem 0.8rem;
+      border-radius: 50px;
+    }
+    .tag-hot    { border:1px solid var(--hot);    color:var(--hot); }
+    .tag-yellow { border:1px solid var(--yellow); color:var(--yellow); }
+    .tag-purple { border:1px solid var(--purple); color:var(--purple); }
+    .tag-cyan   { border:1px solid var(--cyan);   color:var(--cyan); }
+
+    /* ── OUTDOOR SECTION ── */
+    .outdoor-section { background: var(--black); }
+    .outdoor-section .section-title { color: var(--cyan); }
+    .outdoor-section .divider { background: var(--cyan); }
+
+    .outdoor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .outdoor-card {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 1.8rem 1.2rem;
+      text-align: center;
+      transition: border-color 0.25s, transform 0.25s;
+      cursor: default;
+    }
+    .outdoor-card:hover { transform: translateY(-6px); }
+    .outdoor-card:nth-child(1):hover { border-color: var(--hot); }
+    .outdoor-card:nth-child(2):hover { border-color: var(--yellow); }
+    .outdoor-card:nth-child(3):hover { border-color: var(--cyan); }
+    .outdoor-card:nth-child(4):hover { border-color: var(--purple); }
+    .outdoor-card:nth-child(5):hover { border-color: var(--orange); }
+    .outdoor-card:nth-child(6):hover { border-color: var(--hot); }
+    .outdoor-card .oc-icon { font-size: 2.2rem; display:block; margin-bottom:0.8rem; }
+    .outdoor-card h4 { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; margin-bottom:0.4rem; }
+    .outdoor-card p { font-size:0.8rem; color:var(--grey); line-height:1.7; }
+
+    /* ── LOVE SECTION ── */
+    .love-section { background: #0f0f0f; }
+    .love-section .section-title { color: var(--hot); }
+    .love-section .divider { background: var(--hot); }
+
+    .love-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .love-card {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      background: #111;
+    }
+    .love-card:hover { transform: translateY(-5px); }
+    .love-card:nth-child(1) { --accent: var(--hot); }
+    .love-card:nth-child(2) { --accent: var(--yellow); }
+    .love-card:nth-child(3) { --accent: var(--purple); }
+    .love-card:nth-child(4) { --accent: var(--cyan); }
+    .love-card:nth-child(5) { --accent: var(--orange); }
+    .love-card:nth-child(6) { --accent: var(--hot); }
+    .love-card.open { border-color: var(--accent); }
+
+    .love-front {
+      padding: 1.8rem 1.4rem;
+      text-align: center;
+    }
+    .love-front .icon { font-size: 2rem; display:block; margin-bottom:0.6rem; }
+    .love-front p {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent, var(--hot));
+      font-weight: 600;
+    }
+
+    .love-back {
+      padding: 1rem 1.4rem 1.3rem;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.8;
+      display: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-style: italic;
+    }
+    .love-card.open .love-back { display:block; animation:fadeUp 0.3s ease; }
+
+    .hint {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--grey);
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0.5rem 0 0.7rem;
+    }
+
+    /* ── MUSIC SECTION ── */
+    .music-section { background: var(--black); }
+
+    .music-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .music-card {
+      border-radius: 12px;
+      padding: 2rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .music-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      background: var(--card-bg);
+    }
+    .music-card-usher  { background:#1a0a00; border:1px solid rgba(255,107,0,0.3); --card-bg:var(--orange); }
+    .music-card-toxic  { background:#0a001a; border:1px solid rgba(155,81,224,0.3); --card-bg:var(--purple); }
+
+    .music-card-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.5rem;
+    }
+    .music-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      line-height: 1.1;
+      margin-bottom: 0.2rem;
+    }
+    .music-card-usher  .music-card-title { color: var(--orange); }
+    .music-card-toxic  .music-card-title { color: var(--purple); }
+    .music-card-artist { font-size: 0.75rem; color: var(--grey); letter-spacing: 0.08em; margin-bottom: 1.2rem; }
+    .music-card p { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.8; }
+
+    .music-audio {
+      margin-top: 1.2rem;
+    }
+    .music-audio p {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 0.5rem;
+    }
+    .music-audio audio {
+      display: block !important;
+      width: 100%;
+      border-radius: 4px;
+    }
+
+    /* ── TOXIC ARTIST BIO ── */
+    .toxic-bio {
+      margin-top: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: rgba(155,81,224,0.07);
+      border-left: 3px solid var(--purple);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.8;
+    }
+
+    /* ── CLOSING ── */
+    .closing {
+      background: #0f0f0f;
+      padding: 7rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing::before {
+      content:'🎂';
+      position:absolute;
+      font-size:12rem;
+      opacity:0.04;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+    }
+    .closing h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .closing h2 .c1 { color: var(--hot); display:block; }
+    .closing h2 .c2 { color: var(--yellow); display:block; }
+    .closing h2 .c3 { color: var(--cyan); display:block; }
+    .closing p {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.45);
+      max-width: 460px;
+      margin: 0 auto 2.5rem;
+      line-height: 2;
+    }
+    .closing-sig {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      color: var(--hot);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:640px) {
+      .show-card   { grid-template-columns:1fr; }
+      .outdoor-grid{ grid-template-columns:repeat(2,1fr); }
+      .music-grid  { grid-template-columns:1fr; }
+    }
+    @media(max-width:400px) {
+      .outdoor-grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- MUSIC BAR -->
+<div class="music-bar" onclick="toggleMusic()">
+  <span class="note">♪</span>
+  <span id="musicLabel">Play Her Song</span>
+</div>
+<!-- Add you-got-it-bad.mp3 to same folder -->
+<audio id="bgMusic" loop>
+  <source src="you got it bad. mp3.mpeg" type="audio/mpeg" />
+</audio>
+
+<!-- ════════ HERO ════════ -->
+<div class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Replace us.jpg with your photo -->
+  <div class="photo-frame">
+    <img src="us.jpg.jpeg" alt="Us"
+      onerror="this.parentElement.innerHTML='<div class=\'photo-placeholder\'>🎉</div>'" />
+  </div>
+
+  <div class="birthday-badge">🎂 It's Your Birthday Week</div>
+
+  <h1>
+    <span class="line1">Happy</span>
+    <span class="line2">Birthday</span>
+    <span class="line3">Faiza.</span>
+  </h1>
+  <p class="hero-sub">Faiza Mohamed Noor &mdash; this one's all for you.</p>
+  <span class="scroll-hint">↓ keep scrolling</span>
+</div>
+
+<!-- ════════ FAVOURITE SHOW ════════ -->
+<div class="show-section">
+  <div class="section-wrap">
+    <div class="section-label">Your Favourite TV Show</div>
+    <div class="section-title" style="color:var(--hot);">Breaking Bad</div>
+    <div class="divider" style="background:var(--hot);"></div>
+    <div class="show-card">
+      <div class="show-poster">
+        <span class="icon">🧪</span>
+        <h3>Breaking Bad</h3>
+        <p>AMC · 2008–2013</p>
+      </div>
+      <div class="show-text">
+        <p>
+          Walter White is a mild-mannered chemistry teacher turned cancer patient who makes one decision that
+          changes everything — he starts cooking meth. What begins as a desperate attempt to secure his
+          family's future slowly becomes something darker, more thrilling, and completely addictive to watch.
+        </p>
+        <p>
+          It's one of the greatest TV shows ever made — not just because of the plot, but because of how
+          it makes you root for someone you probably shouldn't. Every episode pulls you deeper.
+          No wonder you're obsessed.
+        </p>
+        <p>
+          "I am the one who knocks." — Walter White 🧪
+        </p>
+        <div class="show-tags">
+          <span class="tag tag-hot">Crime</span>
+          <span class="tag tag-yellow">Drama</span>
+          <span class="tag tag-purple">Thriller</span>
+          <span class="tag tag-cyan">AMC · 5 Seasons</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ OUTDOOR ACTIVITIES ════════ -->
+<div class="outdoor-section">
+  <div class="section-wrap">
+    <div class="section-label">She Was Born for the Outside</div>
+    <div class="section-title">The Most Outgoing Person in the Room</div>
+    <div class="divider" style="background:var(--cyan);"></div>
+    <div class="outdoor-grid">
+      <div class="outdoor-card">
+        <span class="oc-icon">🏃‍♀️</span>
+        <h4 style="color:var(--hot);">Always Moving</h4>
+        <p>She doesn't sit still. If there's something to do outside, she's already there before you finish the sentence.</p>
+      </div>
+      <div class="outdoor-card">
+        <span class="oc-icon">🌍</span>
+        <h4 style="color:var(--yellow);">Adventure Mode</h4>
+        <p>My girl loves the adrenaline rush — she treats every outing like an event. That energy is genuinely contagious.</p>
+      </div>
+      <div class="outdoor-card">
+        <span class="oc-icon">☀️</span>
+        <h4 style="color:var(--cyan);">Sun Kid</h4>
+        <p>She recharges differently from most people. Give her open air and she's operating at full capacity. I also fuck with the sun kissed selfies or videos(please send more)</p>
+      </div>
+      <div class="outdoor-card">
+        <span class="oc-icon">🎉</span>
+        <h4 style="color:var(--purple);">Social Butterfly</h4>
+        <p>Every group is better with Faiza in it.</p>
+      </div>
+      <div class="outdoor-card">
+        <span class="oc-icon">🏆</span>
+        <h4 style="color:var(--orange);">Competitive Spirit</h4>
+        <p>She is just like me fr. hahahaha.</p>
+      </div>
+      <div class="outdoor-card">
+        <span class="oc-icon">🖤</span>
+        <h4 style="color:var(--white);">All Black Everything</h4>
+        <p>she makes all-black look like it was invented for her specifically.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ THINGS I LOVE ABOUT HER ════════ -->
+<div class="love-section">
+  <div class="section-wrap">
+    <div class="section-label">Click each card to reveal</div>
+    <div class="section-title">Things I Love About You</div>
+    <div class="divider" style="background:var(--hot);"></div>
+    <div class="love-grid">
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+          <span class="icon">😂</span>
+          <p>Your Energy</p>
+        </div>
+        <div class="love-back">
+        You somehow make everything louder, warmer and 10x more fun just by existing.
+        </div>
+        <div class="hint">tap to reveal ↓</div>
+      </div>
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+          <span class="icon">🧪</span>
+          <p>Your Taste in TV</p>
+        </div>
+        <div class="love-back">
+          Breaking Bad? That's some W taste not gon lie.
+        </div>
+        <div class="hint">tap to reveal ↓</div>
+      </div>
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+          <span class="icon">🖤</span>
+          <p>How much you care</p>
+        </div>
+        <div class="love-back">
+          You got a big heart Queen. Never change.
+        </div>
+        <div class="hint">tap to reveal ↓</div>
+      </div>
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+          <span class="icon">🌍</span>
+          <p>Your Adventurous Side</p>
+        </div>
+        <div class="love-back">
+          She be trying random shit. I wanna learn that shit from her coz somehow i always end up having the best day when with her or even just talking to her. That's not luck — that's Faiza.
+        </div>
+        <div class="hint">tap to reveal ↓</div>
+      </div>
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+          <span class="icon">💫</span>
+          <p>Your Name</p>
+        </div>
+        <div class="love-back">
+          Faiza means "victorious" in Arabic. And honestly? Correct. She wins at most things she tries. Including being a great person to have around.
+        </div>
+        <div class="hint">tap to reveal ↓</div>
+      </div>
+
+      <div class="love-card" onclick="toggleCard(this)">
+        <div class="love-front">
+        
+      
+      
+  
+
+
+  </div>
+</div>
+
+<!-- ════════ MUSIC SECTION ════════ -->
+<div class="music-section">
+  <div class="section-wrap">
+    <div class="section-label">Her Soundtrack</div>
+    <div class="section-title" style="color:var(--yellow);">The Songs She Moves To</div>
+    <div class="divider" style="background:var(--yellow);"></div>
+    <div class="music-grid">
+
+      <!-- USHER -->
+      <div class="music-card music-card-usher">
+        <div class="music-card-label">She Jams To This</div>
+        <div class="music-card-title">You Got It Bad</div>
+
+        <p>
+          One of the smoothest R&B songs ever recorded. The kind of track that hits differently
+          when you know what it's about — and Faiza clearly knows exactly what it's about.
+        </p>
+        <div class="music-audio">
+          <p>Add your audio file below</p>
+          <!-- Name your file you-got-it-bad.mp3 and place it in the same folder -->
+          <audio controls>
+            <source src="you got it bad. mp3.mpeg" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+
+      <!-- TOXIC LYRICALLY -->
+      <div class="music-card music-card-toxic">
+        <div class="music-card-label">Her Favourite Kenyan Artist</div>
+        <div class="music-card-title">Toxic Lyrikali</div>
+      
+        <p>
+          That is some shit you would not predict at all. Who goes from usher to toxic...she does! Faiza does!!!
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════ CLOSING ════════ -->
+<div class="closing">
+  <h2>
+    <span class="c1">Happy</span>
+    <span class="c2">Birthday</span>
+    <span class="c3">Faiza. 🎉</span>
+  </h2>
+  <p>
+    You are one of those people who makes life more fun just by being in it.
+    This week is yours — own every second of it. You deserve all of it
+    and then some.
+  </p>
+  <div class="closing-sig">— Abdullahi🖤</div>
+</div>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+  Made with love for Faiza Mohamed Noor &nbsp;&middot;&nbsp; &copy; 2026 &nbsp;&middot;&nbsp; Happy Birthday Queen🎂
+</footer>
+
+<script>
+  /* ── CARD TOGGLE ── */
+  function toggleCard(card) {
+    card.classList.toggle('open');
+  }
+
+  /* ── MUSIC TOGGLE ── */
+  function toggleMusic() {
+    const audio = document.getElementById('bgMusic');
+    const label = document.getElementById('musicLabel');
+    if (audio.paused) {
+      audio.play().catch(() => {});
+      label.textContent = 'Pause ♪';
+    } else {
+      audio.pause();
+      label.textContent = 'Play Her Song';
+    }
+  }
+
+  /* ── CONFETTI ── */
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const colors = ['#FF2D55','#FFD700','#9B51E0','#00D4FF','#FF6B00','#FFFFFF'];
+  const pieces = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    w: Math.random() * 10 + 5,
+    h: Math.random() * 6 + 3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speed: Math.random() * 2 + 1,
+    angle: Math.random() * 360,
+    spin: (Math.random() - 0.5) * 4,
+    opacity: Math.random() * 0.7 + 0.3
+  }));
+
+  let frame = 0;
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (frame < 400) {
+      pieces.forEach(p => {
+        p.y += p.speed;
+        p.angle += p.spin;
+        if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle * Math.PI / 180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      frame++;
+    }
+    requestAnimationFrame(drawConfetti);
+  }
+  drawConfetti();
+</script>
+
+</body>
+</html>
